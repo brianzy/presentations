@@ -1,0 +1,135 @@
+
+/* makes title slide white as well */
+.reveal .state-background {
+  background: #FFFFFF !important;
+}
+
+.r-logo-blue {
+  color: #1F63B6 !important; 
+}
+
+.monospace-font {
+  font-family: monospace !important;
+}
+
+/* pushes content further to top */
+.reveal .slides>section {
+  top: -60% !important;
+}
+
+/* makes code snippets smaller text */
+.pre code {
+  font-size: 1em;
+}
+
+.longer-list li{
+ font-size:75% !important;
+}
+
+.reveal ol, .reveal ul {
+  margin: 0 !important;
+}
+
+ /* places logo */
+div.logo {
+	padding-top: 10px;
+	padding-bottom: 25px;
+}
+
+.logo img {
+  padding-left: 10px;
+	padding-right: 5px;
+	position: fixed;
+	left: 0px;
+	z-index: 100;
+}
+
+.logo p {
+  font: 16px/20px Arial, sans-serif;
+  color: #0054A0 !important;
+  padding-left: 5px;
+	position: fixed;
+	left: 70px;
+	z-index: 100;
+}
+
+.reveal h1 {
+  color: #555555 !important;
+  text-shadow: none !important;
+}
+
+.reveal h2, h3 ,h4 ,h5, h6, p {
+  color: #555555 !important;
+}
+
+/* stops title hyphenating if too long */
+.reveal h1, .reveal h2, .reveal h3 {
+  word-wrap: normal;
+  -moz-hyphens: none;
+}
+
+/* inserts copyright */
+.copyright {
+  color: #555555;
+  text-align: left;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  padding: 10px;
+  z-index: 100;
+	font-size: 100%;
+}
+
+/* default placement of images is center */
+.midcenter {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+}
+
+.photobanner p {
+  text-align: left;
+  display: block;
+  padding-bottom: 20px;
+ }
+ 
+.photobanner img {
+  float: left;
+  height: 100px;
+  width: 100px;
+ }
+ 
+.photobanner span {
+  font-size: 25px;
+  padding-left: 10px;
+  vertical-align: middle;
+ }
+ 
+.photobanner .item2 {
+  font-size: 25px;
+  padding-left: 10px;
+  vertical-align: middle;
+  align: left;
+  }
+
+.footer {
+    color: black !important;
+    position: fixed !important; 
+    top: 90% !important;
+    text-align: center !important;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100% !important;
+}
+
+.footer2 {
+    color: black !important;
+    background: #E8E8E8 !important;
+    position: fixed !important; 
+    top: 90% !important;
+    text-align: left !important;
+    height: 205px; !important
+    margin-left: auto;
+    margin-right: auto;
+    width: 95% !important;
+}

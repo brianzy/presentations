@@ -1,0 +1,157 @@
+<div class="logo">
+  <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
+  <img src="./pictures/norfolk-data-sci-logo.png" style="width:200px;" alt="logo">
+  </a>
+</div>
+
+<div class="copyright">
+Norfolk Data Science: <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">http://www.meetup.com/NorfolkDataSci/</a>
+</div>
+
+Norfolk Data Science
+========================================
+author: Regular Meeting
+date: `r format(as.Date('2016-09-06'), format="%B %d, %Y")`
+css: presentation-css.css
+
+Sponsors
+========================================
+left: 40%
+
+<br>
+<span style="font-size:115%;"><u>Stack Overflow</u></span><br>
+
+<div>
+  <p>
+    <a href="https://stackoverflow.com"><img style="height:100px;vertical-align:middle;" src="./pictures/stackoverflow-logo.png" alt="Stack Overflow Logo" target="_blank"></a></br>
+    <span style="font-size:115%;">Donating Stickers</span>
+  </p>
+</div>
+
+***
+
+<br>
+<span style="font-size:115%;"><u>O'Reilly Media, Inc.</u></span><br>
+
+<div>
+  <p>
+    <a href="https://oreilly.com"><img style="height:100px;" src="./pictures/oreilly-logo.png" alt="O'Reilly Logo" target="_blank"></a></br>
+    <span style="font-size:115%;">Offering 12 Free E-books</span>
+    </br>
+    <span style="font-size:85%;"><a href="www.oreilly.com/pub/get/757rug" target="_blank">www.oreilly.com/pub/get/757rug</a></span>
+  </p>
+</div>
+
+Job Opportunities
+========================================
+
+<br>
+## EVMS - Speak to Dr. Tina Cunningham
+<br>
+## Booz Allen - Speak to William Reith
+
+
+```{r pulling-googleanalytics, eval=F, echo=F}
+
+options(stringsAsFactors = FALSE)
+suppressWarnings(suppressPackageStartupMessages(library(plyr)))
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+suppressWarnings(suppressPackageStartupMessages(library(tidyr)))
+suppressWarnings(suppressPackageStartupMessages(library(lubridate)))
+suppressWarnings(suppressPackageStartupMessages(library(httr)))
+suppressWarnings(suppressPackageStartupMessages(library(RGoogleAnalytics)))
+
+# determine column to paste in
+current_date <- Sys.Date()
+end_of_previous_month <- current_date - days(day(current_date))
+
+datestart <- format(end_of_previous_month, "%Y-%m-01")
+dateend <- format(end_of_previous_month, "%Y-%m-%d")
+
+load("token_file")
+ValidateToken(token)
+query.list <- Init(start.date = datestart,
+                   end.date = dateend,
+                   dimensions = "ga:searchDestinationPage",
+                   metrics = "ga:sessions,ga:pageviews,ga:users",
+                   max.results = 10000,
+                   table.id = "ga:126488020") # pull the table id from "View ID" in GA Profile
+# Create the Query Builder object so that the query parameters are validated
+ga.query <- QueryBuilder(query.list)
+# Extract the data and store it in a data-frame
+ga.data <- GetReportData(ga.query, token, split_daywise = F, delay = 5)
+
+ga.data %>% 
+  filter(grepl('/NorfolkDataSci', searchDestinationPage)) %>% 
+  summarize(total_users=sum(users),
+            total_pageviews=sum(pageviews)) %>% 
+  mutate(pageviews_per_user = round(total_pageviews / total_users, 1))
+
+ga.data %>% 
+  filter(searchDestinationPage %in% c('/code/', 
+                                      '/community/',
+                                      '/contact-us/', 
+                                      '/leadership/',
+                                      '/mission/',
+                                      '/news/',
+                                      '/participation/',
+                                      '/projects/',
+                                      '/roadmaps/')) %>% 
+  summarize(total_users=sum(users),
+            total_pageviews=sum(pageviews)) %>% 
+  mutate(pageviews_per_user = round(total_pageviews / total_users, 1))
+
+```
+
+```{r pulling-twitterdata, echo=F}
+
+#TBD
+
+```
+
+Digital Presence Analysis
+========================================
+left: 50%
+
+<div class="footer2" style="margin-top:-150px; padding: 10px;">
+  <a href="https://norfolkdatasci.github.io" target="_blank">https://norfolkdatasci.github.io</a>:<br>
+  <i>Users</i>: 58&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Pageviews</i>: 309&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>PVs per User</i>: 5.3
+  <hr>
+  <a href="https://meetup.com/NorfolkDataSci" target="_blank">https://meetup.com/NorfolkDataSci</a>:<br>
+  <i>Users</i>: 225&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Pageviews</i>: 40;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>PVs per User</i>: 1.8
+</div>
+
+<br>
+<img src="./pictures/twitter-analytics/2016-07.png" alt="July 2016">
+
+***
+
+<br>
+<img src="./pictures/twitter-analytics/2016-08.png" alt="August 2016">
+
+
+Open Projects 
+========================================
+
+<br>
+
+### Traffic in HR - Chris Brossman
+https://github.com/NorfolkDataSci/trafficInHR
+
+<br>
+
+### Car Crashes with Bikes - Tim Dunbar
+https://github.com/NorfolkDataSci/carCrashesWithBikes
+
+
+Next Month's Meeting
+========================================
+
+<br>
+
+<span style="font-size:115%;color:black;"><u>Main Presentation: TBD</u></span><br>
+<ul>
+  <li>Food & Sponsors: Dominion Enterprises</li>
+  <li>When: Tuesday, October 4th, 2016 @ 7:00 PM</li>
+  <li>Where: Slover Library 105 Board Room</li>
+</ul>

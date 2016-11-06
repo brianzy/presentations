@@ -1,0 +1,138 @@
+<div class="logo">
+  <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
+  <img src="./pictures/norfolk-data-sci-logo.png" style="width:200px;" alt="logo">
+  </a>
+</div>
+
+<div class="copyright">
+Norfolk Data Science: <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">http://www.meetup.com/NorfolkDataSci/</a>
+</div>
+
+Norfolk Data Science
+========================================
+author: Regular Meeting
+date: `r format(as.Date('2016-10-04'), format="%B %d, %Y")`
+css: presentation-css.css
+
+WiFi and Screenshare
+========================================
+<br>
+<span style="font-size:140%;color:black;">Getting on Library WiFi: </span><br>
+<br>
+<span style="font-size:120%;"><u>Network Key</u>: nplwireless (first time only)</span><br>
+<span style="font-size:120%;"><u>Username</u>: nplguest</span><br>
+<span style="font-size:120%;"><u>Password</u>: nplguest</span><br>
+<br>
+<span style="font-size:140%;color:black;">Follow Tonight's Meeting at: </span>
+<a href="https://join.freeconferencecall.com/norfolkdatasci">https://join.freeconferencecall.com/norfolkdatasci</a>
+
+Next Month's Meeting
+========================================
+
+<br>
+<span style="font-size:115%;color:black;">Presentation Starts at </span><b><u><span style="font-size:150%;color:black;">6:30 PM</b></u></span><br>
+<ul>
+  <li>Presentation: Outline and Practice with Git and GitHub</li>
+  <li>Food & Sponsors: Sandwiches provided by Dominion Enterprises</li>
+  <li>When: Tuesday, November 1st, 2016 @ 6:30 PM</li>
+  <li>Where: Slover Library 105 Board Room</li>
+</ul>
+
+Jobs Board on Our Site
+========================================
+
+<span style="font-size:115%;color:black;">Please Share Your Job Opportunities!</span>
+<br>
+<a href="https://norfolkdatasci.github.io/jobs">https://norfolkdatasci.github.io/jobs</a>
+<img src="./pictures/jobs-board.png" alt="Norfolk Data Sci Job Board">
+
+Contest Continuing
+========================================
+
+<br>
+
+## Win a $25 Starbucks Gift Card!!
+<hr>
+<ol>
+  <li>Sign Up for Slack (<a href="https://norfolkdatasci.slack.com">https://norfolkdatasci.slack.com</a>)</li>
+  <li>Create a Repo on GitHub (<a href="https://github.com/NorfolkDataSci">https://github.com/NorfolkDataSci</a>)</li>
+  <li>Add 2 Issues on your GitHub repo</li>
+</ol>
+
+```{r pulling-googleanalytics, eval=F, echo=F}
+
+options(stringsAsFactors = FALSE)
+suppressWarnings(suppressPackageStartupMessages(library(plyr)))
+suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
+suppressWarnings(suppressPackageStartupMessages(library(tidyr)))
+suppressWarnings(suppressPackageStartupMessages(library(lubridate)))
+suppressWarnings(suppressPackageStartupMessages(library(httr)))
+suppressWarnings(suppressPackageStartupMessages(library(RGoogleAnalytics)))
+
+# determine column to paste in
+current_date <- Sys.Date()
+end_of_previous_month <- current_date - days(day(current_date))
+
+datestart <- format(end_of_previous_month, "%Y-%m-01")
+dateend <- format(end_of_previous_month, "%Y-%m-%d")
+
+load("token_file")
+ValidateToken(token)
+query.list <- Init(start.date = datestart,
+                   end.date = dateend,
+                   dimensions = "ga:searchDestinationPage",
+                   metrics = "ga:sessions,ga:pageviews,ga:users",
+                   max.results = 10000,
+                   table.id = "ga:126488020") # pull the table id from "View ID" in GA Profile
+# Create the Query Builder object so that the query parameters are validated
+ga.query <- QueryBuilder(query.list)
+# Extract the data and store it in a data-frame
+ga.data <- GetReportData(ga.query, token, split_daywise = F, delay = 5)
+
+ga.data %>% 
+  filter(grepl('/NorfolkDataSci', searchDestinationPage)) %>% 
+  summarize(total_users=sum(users),
+            total_pageviews=sum(pageviews)) %>% 
+  mutate(pageviews_per_user = round(total_pageviews / total_users, 1))
+
+ga.data %>% 
+  filter(searchDestinationPage %in% c('/code/', 
+                                      '/community/',
+                                      '/contact-us/', 
+                                      '/leadership/',
+                                      '/mission/',
+                                      '/news/',
+                                      '/participation/',
+                                      '/projects/',
+                                      '/roadmaps/')) %>% 
+  summarize(total_users=sum(users),
+            total_pageviews=sum(pageviews)) %>% 
+  mutate(pageviews_per_user = round(total_pageviews / total_users, 1))
+
+```
+
+```{r pulling-twitterdata, echo=F}
+
+#TBD
+
+```
+
+Digital Presence Analysis
+========================================
+left: 50%
+
+<div class="footer2" style="margin-top:-150px; padding: 10px;">
+  <a href="https://norfolkdatasci.github.io" target="_blank">https://norfolkdatasci.github.io</a>:<br>
+  <i>Users</i>: 63&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Pageviews</i>: 139&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>PVs per User</i>: 2.2
+  <hr>
+  <a href="https://meetup.com/NorfolkDataSci" target="_blank">https://meetup.com/NorfolkDataSci</a>:<br>
+  <i>Users</i>: 313&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>Pageviews</i>: 593&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>PVs per User</i>: 1.8
+</div>
+
+<br>
+<img src="./pictures/twitter-analytics/2016-08.png" alt="August 2016">
+
+***
+
+<br>
+<img src="./pictures/twitter-analytics/2016-09.png" alt="September 2016">
