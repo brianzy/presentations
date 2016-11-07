@@ -30,13 +30,14 @@
 <!--- DONT TOUCH --->
 <div class="logo">
   <a href="http://www.meetup.com/NorfolkDataSci" target="_blank">
-    <img src="../norfolk-data-sci-logo.png" style="width:200px;" alt="logo">
+    <img src="../norfolk-data-sci-logo.png" style="width:200px;" alt="logo" />
   </a>
 </div>
 
 <!--- DONT TOUCH --->
 <div class="copyright">
-  Norfolk Data Science: <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
+  Norfolk Data Science: 
+  <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
     http://www.meetup.com/NorfolkDataSci
   </a>
 </div>

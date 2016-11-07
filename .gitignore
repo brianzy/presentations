@@ -3,3 +3,7 @@
 .Rhistory
 .RData
 index.md
+monthly-updates/*.md
+.httr-oauth
+token_file
+twitter_token
