@@ -20,7 +20,7 @@ Go to the homepage and click away! https://norfolkdatasci.github.io/presentation
     2. Try to use a more recent presentation when you copy. Typically, more formatting
     and styling tricks are added over time and the newest presentations will have the
     nicest looking content.
-4. Add you content. See instructions below for how to add different content types (PPTX, PDF, HTML, RPres)    
+4. Add your content. See instructions below for how to add different content types (PPTX, PDF, HTML, RPres)    
 5. When you are ready submit a pull request to the `master` branch
 
 ###How to Add Different Content Types (PPTX, PDF, HTML, RPres)  
