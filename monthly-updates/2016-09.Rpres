@@ -1,41 +1,41 @@
 
-<! --- DONT TOUCH --->
+<!--- SET THE URL OF YOUR PRESENTATION. THIS WILL LOOK LIKE https://norfolkdatasci.github.io/YOUR-PRESENTATION-NAME-HERE --->
+<meta property="og:url" content="https://norfolkdatasci.github.io/monthly-updates/2016-09">
+
+<!--- MAKE THE TITLE THE SAME FOR THESE 2 METATAGS --->
+<meta name="twitter:title" content="Monthly Update for September 2016">
+<meta property="og:title" content="Monthly Update for September 2016">
+
+<!--- MAKE THE COVER IMAGE THE SAME FOR THESE 2 METATAGS --->
+<meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/meetup-link/develop/norfolk-ds-logo2.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/meetup-link/develop/norfolk-ds-logo2.png">
+
+<!--- MAKE THE DESCRIPTION THE SAME FOR ALL THESE METATAGS --->
+<meta name="description" content="A guide for individuals relatively new to git and GitHub" />
+<meta name="twitter:description" content="A guide for individuals relatively new to git and GitHub">
+<meta property="og:description" content="A guide for individuals relatively new to git and GitHub" />
+
+<!--- DONT TOUCH THESE METATAGS --->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@NorfolkDataSci">
+<meta property="og:site_name" content="Norfolk Data Science" />
+<meta name="twitter:creator" content="@NorfolkDataSci">
+<meta property="og:type" content="website">
+
+<!--- CHANGE THE HREF TO POINT TO YOUR REPOSITORY SO PEOPLE CAN FORK IT --->
+<a href="https://github.com/NorfolkDataSci/presentations/monthly-updates"><img style="z-index: 1000; margin: 0px !important; max-height: 300px !important; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<!--- DONT TOUCH --->
 <div class="logo">
   <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
   <img src="../norfolk-data-sci-logo.png" style="width:200px;" alt="logo">
   </a>
 </div>
 
-<! --- DONT TOUCH --->
+<!--- DONT TOUCH --->
 <div class="copyright">
 Norfolk Data Science: <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">http://www.meetup.com/NorfolkDataSci/</a>
 </div>
-
-<! --- CHANGE THE HREF TO POINT TO YOUR REPOSITORY SO PEOPLE CAN FORK IT --->
-<a href="https://github.com/NorfolkDataSci/presentations/monthly-updates"><img style="z-index: 1000; margin: 0px !important; max-height: 300px !important; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
-
-<! --- SET THE URL OF YOUR PRESENTATION. THIS WILL LOOK LIKE https://norfolkdatasci.github.io/YOUR-PRESENTATION-NAME-HERE --->
-<meta property="og:url" content="https://norfolkdatasci.github.io/monthly-updates/2016-09">
-
-<! --- MAKE THE TITLE THE SAME FOR THESE 2 METATAGS --->
-<meta name="twitter:title" content="Monthly Update for September 2016">
-<meta property="og:title" content="Monthly Update for September 2016">
-
-<! --- MAKE THE COVER IMAGE THE SAME FOR THESE 2 METATAGS --->
-<meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/meetup-link/develop/norfolk-ds-logo2.png">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/meetup-link/develop/norfolk-ds-logo2.png">
-
-<! --- MAKE THE DESCRIPTION THE SAME FOR ALL THESE METATAGS --->
-<meta name="description" content="A guide for individuals relatively new to git and GitHub" />
-<meta name="twitter:description" content="A guide for individuals relatively new to git and GitHub">
-<meta property="og:description" content="A guide for individuals relatively new to git and GitHub" />
-
-<! --- DONT TOUCH THESE METATAGS --->
-<meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@NorfolkDataSci">
-<meta property="og:site_name" content="Norfolk Data Science" />
-<meta name="twitter:creator" content="@NorfolkDataSci">
-<meta property="og:type" content="website">
 
 Norfolk Data Science
 ========================================
