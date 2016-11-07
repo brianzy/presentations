@@ -26,12 +26,13 @@ Go to the homepage and click away! https://norfolkdatasci.github.io/presentation
 ###How to Add Different Content Types (PPTX, PDF, HTML, RPres)  
 
 ####Powerpoint
-If you are making powerpoint slides, save them to the repository when you are totally finished. Also, 
-upload a copy of the slides as PDF. The PDF slides will render with in GitHub and other places.
+If you are making powerpoint slides, save them to the repository when you are totally finished. 
+We don't need to see your incremental changes as different commits since this is not a plain text format. Also, 
+upload a copy of the slides as PDF. The PDF slides will render nicely within GitHub and other places.
 
 ####PDF
 Save the to the repository when you are totally finished. We don't need to see your incremental changes
-as different commits since this is not a plain text format
+as different commits since this is not a plain text format.
 
 ####RPres
 Start working on your Rpres file by updating the metatags in the top of the document that you copied (index.Rpres). 
