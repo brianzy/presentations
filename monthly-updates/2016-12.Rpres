@@ -1,0 +1,158 @@
+
+<!--- SET THE URL OF YOUR PRESENTATION. THIS WILL LOOK LIKE https://norfolkdatasci.github.io/YOUR-PRESENTATION-NAME-HERE --->
+<meta property="og:url" content="https://norfolkdatasci.github.io/monthly-updates/2016-12.html">
+
+<!--- MAKE THE TITLE THE SAME FOR THESE 2 METATAGS --->
+<meta name="twitter:title" content="Monthly Update for December 2016">
+<meta property="og:title" content="Monthly Update for December 2016">
+
+<!--- MAKE THE COVER IMAGE THE SAME FOR THESE 2 METATAGS --->
+<meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/meetup-link/develop/norfolk-ds-logo2.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/meetup-link/develop/norfolk-ds-logo2.png">
+
+<!--- MAKE THE DESCRIPTION THE SAME FOR ALL THESE METATAGS --->
+<meta name="description" content="Monthly Update November 2016" />
+<meta name="twitter:description" content="Monthly Update November 2016" />
+<meta property="og:description" content="Monthly Update November 2016" />
+
+<!--- DONT TOUCH THESE METATAGS --->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@NorfolkDataSci">
+<meta property="og:site_name" content="Norfolk Data Science" />
+<meta name="twitter:creator" content="@NorfolkDataSci">
+<meta property="og:type" content="website">
+
+<!--- CHANGE THE HREF TO POINT TO YOUR REPOSITORY SO PEOPLE CAN FORK IT --->
+<a href="https://github.com/NorfolkDataSci/presentations/tree/master/monthly-updates"><img style="z-index: 1000; margin: 0px !important; max-height: 300px !important; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<!--- DONT TOUCH --->
+<div class="logo">
+  <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
+  <img src="../norfolk-data-sci-logo.png" style="width:200px;" alt="logo">
+  </a>
+</div>
+
+<!--- DONT TOUCH --->
+<div class="copyright">
+Norfolk Data Science: <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">http://www.meetup.com/NorfolkDataSci/</a>
+</div>
+
+
+Norfolk Data Science
+========================================
+author: Regular Meeting
+date: `r gsub(" 0", " ", format(as.Date('2016-12-06'), format="%B %d, %Y"))`
+css: ../norfolk-data-sci-presentations.css
+
+WiFi and Screenshare
+========================================
+<br>
+<span style="font-size:150%;color:black;">Getting on Library WiFi: </span><br>
+<br>
+<span style="font-size:130%;"><u>Network Password</u>: nplwireless</span><br>
+<span style="font-size:130%;"><u>Username</u>: nplguest</span><br>
+<span style="font-size:130%;"><u>Password</u>: nplguest</span><br>
+<br>
+<br>
+<span style="font-size:150%;color:black;">Follow Tonight's Meeting at: </span>
+<a href="https://join.freeconferencecall.com/norfolkdatasci">https://join.freeconferencecall.com/norfolkdatasci</a>
+
+
+Remote Attendance Options
+========================================
+
+### Join meeting webcast (use VoIP)
+<div id="content">
+  <a href="https://join.freeconferencecall.com/norfolkdatasci" target="_blank">
+    <img style="height:70px; float:left;" src="./img/fcc-logo.jpg" alt="Free Conference Call Logo" />
+  </a>
+  <p style="font-size:80%; line-height:90px;">
+    <a style="margin-left:20px;" href="https://join.freeconferencecall.com/norfolkdatasci"
+       target="_blank">
+       https://join.freeconferencecall.com/norfolkdatasci
+    </a>
+  </p>
+</div>
+
+### Watch on Youtube channel
+<div id="content">
+  <a href="https://www.youtube.com/channel/UCJ3IfgbMCVRpFz6Y83Rjx7A" target="_blank">
+    <img style="height:50px; float:left;" src="./img/youtube-logo.png" alt="Youtube Logo" />
+  </a>
+  <p style="font-size:80%; line-height:70px;">
+    <a style="margin-left:20px;" href="https://www.youtube.com/channel/UCJ3IfgbMCVRpFz6Y83Rjx7A"
+       target="_blank">
+       https://www.youtube.com/channel/UCJ3IfgbMCVRpFz6Y83Rjx7A
+    </a>
+  </p>
+</div>
+
+### Preview and Review slides
+
+Look for slides link in comments section and/or event details
+<img src="./img/slides-link-example.png" alt="Slides Link" />
+
+
+O'Reilly Ebooks and Hard Copies!
+========================================
+
+### Available here:
+https://drive.google.com/drive/folders/0B3T4H_M8tAG2czhUclhsakRxYlU
+
+<div id="wrapper" style="text-align: center">
+    <div id="yourdiv" style="display: inline-block;">
+      <a href="https://drive.google.com/drive/folders/0B3T4H_M8tAG2czhUclhsakRxYlU?usp=sharing">
+        <img style="align:center;" src="./img/ebooks-library.png" alt="Ebooks" target="_blank" />
+      </a>
+    </div>
+</div>
+
+
+Second Monthly Meeting
+========================================
+
+<br>
+
+Survey Link: <a href="https://www.surveymonkey.com/r/JQW28XF" target="_blank"/>https://www.surveymonkey.com/r/JQW28XF</a>
+
+<u>Outline:</u>
+<ol style="padding-left:100px;">
+  <li>Do you want a second monthly meeting?</li>
+  <li><b>When</b> - What day of the week and time? (Fri Eve, Sat, Sun)</li>
+  <li><b>Where</b> - What city and location type? (Library, Coffee Shop, etc)</li>
+</ol>
+
+
+Group Admin Stuff
+========================================
+
+<br>
+
+### Leadership Changes
+
+<ul style="padding-left:100px; padding-bottom:20px;">
+  <li>Josiah Baker as new Co-Organizer</li>
+  <li>Toni McCreash as Advisor to group</li>
+</ul>
+
+### Teaming up with Code4HR
+They are meeting tomorrow night (12/7) at Hatch
+
+### Sponsorship
+Prefer to join forces with established group
+<br>
+(DC Data Community, Code4HR)
+
+
+No January Norfolk Data Science Meeting
+========================================
+
+<div class="attribution">
+  <div class="attribution-link">
+    &nbsp;&nbsp;Image from: <a href="http://hutchinsonbear.com/3315/news/holiday-break/">http://hutchinsonbear.com/3315/news/holiday-break/</a>
+  </div>
+</div>
+
+<div class="midcenter" style="margin-left:-380px; margin-top:-225px; width:103%;">
+  <img style="width:80%;" src="./img/winter-break.jpg" alt="winter-break">
+</div>
