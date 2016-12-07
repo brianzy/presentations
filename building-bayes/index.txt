@@ -1,0 +1,223 @@
+
+<!--- SET THE URL OF YOUR PRESENTATION. ---> 
+<!--- THIS WILL LOOK LIKE https://norfolkdatasci.github.io/YOUR-PRESENTATION-NAME-HERE --->
+<meta property="og:url" content="https://norfolkdatasci.github.io/building-bayes.git">
+
+<!--- MAKE THE TITLE THE SAME FOR THESE 2 METATAGS --->
+<meta name="twitter:title" content="Build a simple Bayes Classifier">
+<meta property="og:title" content="Build a simple Bayes Classifier">
+
+<!--- MAKE THE COVER IMAGE THE SAME FOR THESE 2 METATAGS --->
+<meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/building-bayes/master/img/bayes_rule.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/building-bayes/master/img/bayes_rule.png">
+
+<!--- MAKE THE DESCRIPTION THE SAME FOR ALL THESE METATAGS --->
+<meta name="description" content="A guide for individuals relatively new to git and GitHub" />
+<meta name="twitter:description" content="A guide for individuals relatively new to git and GitHub">
+<meta property="og:description" content="A guide for individuals relatively new to git and GitHub" />
+
+<!--- DONT TOUCH THESE METATAGS --->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@NorfolkDataSci">
+<meta property="og:site_name" content="Norfolk Data Science" />
+<meta name="twitter:creator" content="@NorfolkDataSci">
+<meta property="og:type" content="website">
+
+<!--- CHANGE TO THE FILE PATH OF YOUR PRESENTATION IN THE REPOSITORY --->
+<!--- The file path will look something like https://github.com/NorfolkDataSci/presentations/tree/master/YOUR-PRESENTATION-NAME --->
+<a href="https://github.com/NorfolkDataSci/presentations/tree/master/building-bayes"><img style="z-index: 1000; margin: 0px !important; max-height: 300px !important; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+<!--- DONT TOUCH --->
+<div class="logo">
+  <a href="http://www.meetup.com/NorfolkDataSci" target="_blank">
+    <img src="img/norfolk-data-sci-logo.png" style="width:200px;" alt="logo" />
+  </a>
+</div>
+
+<!--- DONT TOUCH --->
+<div class="copyright">
+  Norfolk Data Science: 
+  <a href="http://www.meetup.com/NorfolkDataSci/" target="_blank">
+    http://www.meetup.com/NorfolkDataSci
+  </a>
+</div>
+
+Building Bayes
+========================================
+author: Josiah Baker
+date: November 6, 2016
+css: ../norfolk-data-sci-presentations.css
+
+
+
+Recommended reading and citation
+========================================
+
+Credit to "Thinking Bayes"
+--
+
+Downey, Allen, "Think Bayes" (2013). 2013. Paper 11.
+http://digitalcommons.olin.edu/facpub_2013/11
+
+What is Naive Bayes?
+========================================
+title: false
+
+<h3>
+  Brief history of "Bayes Theorem"
+</h3>
+<ul style="padding-bottom:20px;padding-top:40px;">
+  <li>Bayes theorem is an equation credited to Thomas Bayes</li>
+  <li>It allows you to update your beliefs based on new information</li>
+  <li>Diachronic interpration</li>
+  <li>Composed of four parts</li>
+  <ul style="padding-left:40px;">
+    <li>P(H): The Prior</li>
+    <li>P(D|H): The Likelihood</li>
+    <li>P(D): Normalizing Constant</li>
+    <li>P(H|D): The Posterior</li>
+  </ul>
+  </li>
+</ul>
+<img src="img/dia-bayes.png" />
+
+The Prior
+====================================================
+title: false
+
+<h3>
+  P(H): Your hypothesis
+</h3>
+<ul style="padding-bottom:20px;padding-top:40px;">
+  <li>
+    What do you believe about a situation?
+  </li>
+  <li>
+    This can be well informed or as general as possible: uniform vs well informed prior
+  </li>
+  <li>
+    Starting with a different hypothesis can affect your outcome!
+  </li>
+
+</ul>
+
+
+
+The Likelihood
+====================================================
+title: false
+
+<h3>
+  P(D|H): The Likelihood
+</h3>
+
+<div class="wrapper">
+  <ul>
+    <li>
+      The Likelihood is the probability of the data given the hypothesis
+    </li>
+    <li>
+      How likely would it be to observe this data if my hypothesis is true?
+      </li>
+    
+
+The Normalizing Constant
+====================================================
+title: none
+
+<h3>
+  P(D): The Normalizing Constant
+</h3>
+
+<ul>
+  <li>
+    Probability of the data under any hypothesis
+  </li>
+  <li>
+    Often times very difficult to determine
+  </li>
+    <li>Simplify:
+    <ul style="padding-left:40px;">
+    <li>Mutually Exclusive</li>
+    <li>Collectively Exhaustive</li>
+    <li>p(D) = p(B1) p(D|B1) + p(B2) p(D|B2)</li>
+  </ul>
+  <li>Not needed in most classifiers</li>
+  </li>
+</ul>
+
+
+The Posterior
+====================================================
+title: none
+
+<h3>
+  P(H|D): The posterior
+</h3>
+
+<ul>
+  <li>
+      The probability of your hypothesis given the data
+  </li>
+  <li>
+    In a classifier, your answer is 
+    <div class="code-div">
+      max(p(H|D))
+    </div>
+  </li>
+
+
+Example
+====================================================
+title: none
+
+<h3>
+  Example: Putting it all together
+</h3>
+
+<ul class="extra-li-top-pad" style="padding-bottom:40px;padding-top:40px;">
+  <li>
+    Add your Name to the README file as a bullet
+  </li>
+  <img src="./img/making-a-commit.png">
+  <li>
+    Save your changes
+  </li>
+  <li>
+    "Stage" all files, commit, then push to GitHub
+    <div style="font-size:70%;" class="code-div">
+      git add .<br>
+      git commit -m "Update README" -m "Add Change"<br>
+      git push origin master<br>
+    </div>
+  </li>
+</ul>
+
+<div class="footer3">
+  Guidelines on how to make good commit messages:&nbsp;&nbsp;
+  <a target="_blank" href="http://chris.beams.io/posts/git-commit/">
+    http://chris.beams.io/posts/git-commit/
+  </a>
+</div>
+
+Lets code!
+====================================================
+title: none
+
+<h3>
+  Naive Bayes with python
+</h3>
+
+<ul class="extra-li-top-pad" style="padding-bottom:20px;padding-top:40px;">
+  <li>
+  Problem: based on a quote, can I tell if you're a man or woman?
+  </li>
+  <li>
+    Training data: quotes from men and women
+  </li>
+  <li>
+    Test data: known quotes and quotes from you!
+  </li>
+</ul>
+
+
