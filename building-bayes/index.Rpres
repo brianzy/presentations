@@ -1,20 +1,20 @@
 
 <!--- SET THE URL OF YOUR PRESENTATION. ---> 
 <!--- THIS WILL LOOK LIKE https://norfolkdatasci.github.io/YOUR-PRESENTATION-NAME-HERE --->
-<meta property="og:url" content="https://norfolkdatasci.github.io/building-bayes.git">
+<meta property="og:url" content="https://norfolkdatasci.github.io/presentations/building-bayes">
 
 <!--- MAKE THE TITLE THE SAME FOR THESE 2 METATAGS --->
 <meta name="twitter:title" content="Build a simple Bayes Classifier">
 <meta property="og:title" content="Build a simple Bayes Classifier">
 
 <!--- MAKE THE COVER IMAGE THE SAME FOR THESE 2 METATAGS --->
-<meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/building-bayes/master/img/bayes_rule.png">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/building-bayes/master/img/bayes_rule.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/presentations/master/building-bayes/img/Bayes_rule.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/presentations/master/building-bayes/img/Bayes_rule.png">
 
 <!--- MAKE THE DESCRIPTION THE SAME FOR ALL THESE METATAGS --->
-<meta name="description" content="A guide for individuals relatively new to git and GitHub" />
-<meta name="twitter:description" content="A guide for individuals relatively new to git and GitHub">
-<meta property="og:description" content="A guide for individuals relatively new to git and GitHub" />
+<meta name="description" content="A guide for individuals interested in learning about Bayes Theorem and it's application to predictive classifiers" />
+<meta name="twitter:description" content="A guide for individuals interested in learning about Bayes Theorem and it's application to predictive classifiers">
+<meta property="og:description" content="A guide for individuals interested in learning about Bayes Theorem and it's application to predictive classifiers" />
 
 <!--- DONT TOUCH THESE METATAGS --->
 <meta name="twitter:card" content="summary">
@@ -53,7 +53,8 @@ css: ../norfolk-data-sci-presentations.css
   knitr::opts_chunk$set(echo=TRUE, eval=TRUE)
 ```
 
-Recommended reading and citation
+
+Recommended Reading and Citation
 ========================================
 
 Credit to "Thinking Bayes"
@@ -62,12 +63,13 @@ Credit to "Thinking Bayes"
 Downey, Allen, "Think Bayes" (2013). 2013. Paper 11.
 http://digitalcommons.olin.edu/facpub_2013/11
 
+
 What is Naive Bayes?
 ========================================
 title: false
 
 <h3>
-  Brief history of "Bayes Theorem"
+  Brief history of Bayes Theorem
 </h3>
 <ul style="padding-bottom:20px;padding-top:40px;">
   <li>Bayes theorem is an equation credited to Thomas Bayes</li>
@@ -83,6 +85,7 @@ title: false
   </li>
 </ul>
 <img src="img/dia-bayes.png" />
+
 
 The Prior
 ====================================================
@@ -105,7 +108,6 @@ title: false
 </ul>
 
 
-
 The Likelihood
 ====================================================
 title: false
@@ -123,7 +125,7 @@ title: false
       How likely would it be to observe this data if my hypothesis is true?
       </li>
     
-
+    
 The Normalizing Constant
 ====================================================
 title: none
@@ -170,45 +172,12 @@ title: none
   </li>
 
 
-Example
-====================================================
-title: none
-
-<h3>
-  Example: Putting it all together
-</h3>
-
-<ul class="extra-li-top-pad" style="padding-bottom:40px;padding-top:40px;">
-  <li>
-    Add your Name to the README file as a bullet
-  </li>
-  <img src="./img/making-a-commit.png">
-  <li>
-    Save your changes
-  </li>
-  <li>
-    "Stage" all files, commit, then push to GitHub
-    <div style="font-size:70%;" class="code-div">
-      git add .<br>
-      git commit -m "Update README" -m "Add Change"<br>
-      git push origin master<br>
-    </div>
-  </li>
-</ul>
-
-<div class="footer3">
-  Guidelines on how to make good commit messages:&nbsp;&nbsp;
-  <a target="_blank" href="http://chris.beams.io/posts/git-commit/">
-    http://chris.beams.io/posts/git-commit/
-  </a>
-</div>
-
 Lets code!
 ====================================================
 title: none
 
 <h3>
-  Naive Bayes with python
+  Naive Bayes with Python
 </h3>
 
 <ul class="extra-li-top-pad" style="padding-bottom:20px;padding-top:40px;">
@@ -222,5 +191,4 @@ title: none
     Test data: known quotes and quotes from you!
   </li>
 </ul>
-
 
