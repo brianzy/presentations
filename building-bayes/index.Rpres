@@ -12,9 +12,9 @@
 <meta name="twitter:image" content="https://raw.githubusercontent.com/NorfolkDataSci/presentations/master/building-bayes/img/Bayes_rule.png">
 
 <!--- MAKE THE DESCRIPTION THE SAME FOR ALL THESE METATAGS --->
-<meta name="description" content="A guide for individuals interested in learning about Bayes Theorem and it's application to predictive classifiers" />
-<meta name="twitter:description" content="A guide for individuals interested in learning about Bayes Theorem and it's application to predictive classifiers">
-<meta property="og:description" content="A guide for individuals interested in learning about Bayes Theorem and it's application to predictive classifiers" />
+<meta name="description" content="A guide for individuals interested in learning about Bayes Theorem and its application to predictive classifiers" />
+<meta name="twitter:description" content="A guide for individuals interested in learning about Bayes Theorem and its application to predictive classifiers">
+<meta property="og:description" content="A guide for individuals interested in learning about Bayes Theorem and its application to predictive classifiers" />
 
 <!--- DONT TOUCH THESE METATAGS --->
 <meta name="twitter:card" content="summary">
