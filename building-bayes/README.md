@@ -1,4 +1,4 @@
-#Learning the Basics of Git
+#Building Bayes - Simple Naive Bayes classifier
 *Norfolk Data Science (NDS)*
 
 -------
