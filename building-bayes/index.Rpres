@@ -4,8 +4,8 @@
 <meta property="og:url" content="https://norfolkdatasci.github.io/presentations/building-bayes">
 
 <!--- MAKE THE TITLE THE SAME FOR THESE 2 METATAGS --->
-<meta name="twitter:title" content="Build a simple Bayes Classifier">
-<meta property="og:title" content="Build a simple Bayes Classifier">
+<meta name="twitter:title" content="Build a Simple Bayes Classifier">
+<meta property="og:title" content="Build a Simple Bayes Classifier">
 
 <!--- MAKE THE COVER IMAGE THE SAME FOR THESE 2 METATAGS --->
 <meta property="og:image" content="https://raw.githubusercontent.com/NorfolkDataSci/presentations/master/building-bayes/img/Bayes_rule.png">
