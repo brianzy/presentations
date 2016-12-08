@@ -1,0 +1,7 @@
+womenCorpus<-scan(file.choose(), what="", sep="\n")
+womenCorpus<-strsplit(womenCorpus, "[[:space:]]+")
+womenCorpus<-data.frame(unlist(womenCorpus))
+womenCorpus<-Corpus(VectorSource(womenCorpus$unlist.womenCorpus.))
+womenCorpus<-tm_map(womenCorpus, PlainTextDocument)
+womenCorpus<-tm_map(womenCorpus, removePunctuation)
+womenCorpus<-tm_map(womenCorpus, stemDocument)
