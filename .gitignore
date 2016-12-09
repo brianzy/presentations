@@ -7,3 +7,4 @@ monthly-updates/*.md
 .httr-oauth
 token_file
 twitter_token
+.ipynb_checkpoints/

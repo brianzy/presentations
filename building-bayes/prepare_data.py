@@ -40,7 +40,6 @@ for word, count in women_counts.items():
         vocab[word] += count
     else:
         vocab[word] = count
-    i
 
 # new example
 
