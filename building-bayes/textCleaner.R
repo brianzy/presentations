@@ -1,4 +1,4 @@
-corpusMaker<-function(x){
+textCleaner<-function(x){
   x<-scan(file.choose(), what="", sep="\n")
   x<-gsub("--\\s.*", "", x)
   x<-gsub("([-'])|[[:punct:]]", "", x)
