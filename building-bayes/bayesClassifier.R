@@ -8,6 +8,7 @@ bayesClassifier<-function(menQ, womenQ, quote, menP, womenP){
   #finds intersection of quote data frame and the above data frames
   intersectM<-menQ[is.element(menQ$menQ, intersect(quote$`unlist(x)`, menQ$menQ)),]
   intersectW<-womenQ[is.element(womenQ$womenQ, intersect(quote$`unlist(x)`, womenQ$womenQ)),]
+  #get row count of men and women intersects
   iCountM<-nrow(intersectM)
   iCountW<-nrow(intersectW)
   #find the likelihoods for each hypothesis only considering the words that match 
