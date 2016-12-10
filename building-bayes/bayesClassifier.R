@@ -6,18 +6,22 @@ bayesClassifier<-function(menQ, womenQ, quote, menP, womenP){
   menQ<-as.data.frame(table(menQ))
   womenQ<-as.data.frame(table(womenQ))
   #finds intersection of quote data frame and the above data frames
-  newM<-menQ[is.element(menQ$m, intersect(quote$`unlist(x)`, menQ$menQ)),]
-  newW<-womenQ[is.element(womenQ$w, intersect(quote$`unlist(x)`, womenQ$womenQ)),]
-  #finds chance of occurance of words in quote in each data frame (womenQ and MenQ)
-  #working on accounting for population size here as well
-  newM$Freq<-newM$Freq/mCount*(mCount/(mCount+wCount))
-  newW$Freq<-newW$Freq/wCount*(wCount/(mCount+wCount))
-  #sums the frequency columns to come up with the likelihoods
-  likelihoodW<-sum(newW$Freq)
-  likelihoodM<-sum(newM$Freq)
-  #multiplies likelihoods by priors to get posteriors
-  posteriorM<-menP*likelihoodM
-  posteriorW<-womenP*likelihoodW
+  intersectM<-menQ[is.element(menQ$menQ, intersect(quote$`unlist(x)`, menQ$menQ)),]
+  intersectW<-womenQ[is.element(womenQ$womenQ, intersect(quote$`unlist(x)`, womenQ$womenQ)),]
+  iCountM<-nrow(intersectM)
+  iCountW<-nrow(intersectW)
+  #find the likelihoods for each hypothesis only considering the words that match 
+  likelihoodM<-iCountM/(iCountM+iCountW)
+  likelihoodW<-iCountW/(iCountM+iCountW)
+  #probability that each word will occur in the individual dataframes
+  intersectM$Freq<-intersectM$Freq/mCount
+  intersectW$Freq<-intersectW$Freq/wCount
+  #likelihood that the word will occur in the words that match
+  intersectM$Freq<-intersectM$Freq*likelihoodM
+  intersectW$Freq<-intersectW$Freq*likelihoodW
+  #sums the frequency column which contains the individual posteriors
+  posteriorM<-sum(intersectM$Freq)
+  posteriorW<-sum(intersectW$Freq)
   #test for higher posterior
   if(posteriorW>posteriorM){
     return("Woman")
