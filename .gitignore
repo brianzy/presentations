@@ -3,7 +3,7 @@
 .Rhistory
 .RData
 index.md
-*.md
+!README.md
 monthly-updates/*.md
 .httr-oauth
 token_file
