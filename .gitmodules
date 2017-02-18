@@ -1,3 +1,0 @@
-[submodule "python-for-data-science/reveal.js"]
-	path = python-for-data-science/reveal.js
-	url = git@github.com:hakimel/reveal.js.git
