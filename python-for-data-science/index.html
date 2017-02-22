@@ -274,7 +274,7 @@ Organization: Norfolk Data Science</p>
 
 </div>
 </div>
-</div></section><section>
+</div></section></section><section><section>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -311,7 +311,7 @@ This is in the <code>.bash_profile</code> file</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Windows">Windows<a class="anchor-link" href="#Windows">&#182;</a></h2><p>Head over to <a href="https://www.continuum.io/downloads">https://www.continuum.io/downloads</a> and use the GUI downloader<br>
 <img src="install_windows.png" alt="GUI Installer"></p>
-<p>Run the executable and follow the instructions</p>
+<p>Run the executable and follow the instructions. We can also set a <code>PATH</code> variable to make python easier to use</p>
 
 </div>
 </div>
@@ -321,13 +321,40 @@ This is in the <code>.bash_profile</code> file</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Getting-additional-packages">Getting additional packages<a class="anchor-link" href="#Getting-additional-packages">&#182;</a></h1><p>Use pip</p>
-<h3 id="Mac">Mac<a class="anchor-link" href="#Mac">&#182;</a></h3>
-<pre><code>pip install package
+<h2 id="Windows-cont.">Windows cont.<a class="anchor-link" href="#Windows-cont.">&#182;</a></h2><ul>
+<li>On XP, right click <code>My Computer -&gt; Properties</code> and navigate to the <code>System Properties -&gt; Advanced</code> tab
+<img src="system_properties.png" alt="System properties" width="40%" style="float: right"/></li>
+<li>Copy the following into the end of the <code>PATH</code> variable  
+<pre><code>;%PYTHON_HOME%\;%PYTHON_HOME%\Scripts</code></pre>
+</li>
+<li>Test your install by opening a command prompt and running  
+<pre><code>C:\Users\Username&gt;python</code></pre>
+</li>
+<li>On Windows 7 and up, search for "environment variables" and follow the same steps</li>
+</ul>
 
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Getting-additional-packages">Getting additional packages<a class="anchor-link" href="#Getting-additional-packages">&#182;</a></h1><p>Anaconda comes with two ways to manage packages: <code>pip</code> and <code>conda</code>. Using these will..</p>
+<ul>
+<li>Insure your packages install correctly</li>
+<li>Allow you to easily upgrade and uninstall packages</li>
+<li>Manage dependencies when install</li>
+</ul>
+<h3 id="Mac">Mac<a class="anchor-link" href="#Mac">&#182;</a></h3>
+<pre><code>pip install &lt;package&gt;  
 </code></pre>
-<h3 id="Windows">Windows<a class="anchor-link" href="#Windows">&#182;</a></h3>
-<pre><code>do stuff ...</code></pre>
+<p>Or..</p>
+
+<pre><code>conda install &lt;package&gt;  
+</code></pre>
+<h3 id="Windows">Windows<a class="anchor-link" href="#Windows">&#182;</a></h3><p><code>pip</code> can also be used on Windows if you properly set up your <code>ENV</code> variable during installation. You can also run it from within <code>git bash</code> or <code>cygwin</code> if you have those installed.</p>
 
 </div>
 </div>
@@ -433,10 +460,211 @@ This is in the <code>.bash_profile</code> file</p>
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">i</span><span class="o">*</span><span class="n">i</span>
+    
+<span class="k">print</span> <span class="s2">&quot;Hi&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0
+1
+4
+9
+16
+25
+36
+49
+64
+81
+Hi
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+<span class="n">data</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x116b0ccd0&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">print</span> <span class="s2">&quot;this is some code&quot;</span>
+<div class=" highlight hl-ipython2"><pre><span></span> 
 </pre></div>
 
 </div>
