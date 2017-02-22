@@ -9,3 +9,4 @@ monthly-updates/*.md
 token_file
 twitter_token
 *.ipynb_checkpoints
+*.DS_Store

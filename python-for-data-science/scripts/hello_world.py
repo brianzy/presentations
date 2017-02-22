@@ -1,4 +1,4 @@
-# my super awesome script
+# demonstrates writing a simple python program
 
 greeting = "Hello, "
 location = "World!"
