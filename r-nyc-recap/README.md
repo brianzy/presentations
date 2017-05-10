@@ -1,4 +1,4 @@
-# Learning the Basics of Git
+# R NYC Recap
 *Norfolk Data Science (NDS)*
 
 -------
