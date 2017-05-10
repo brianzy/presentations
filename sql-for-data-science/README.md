@@ -1,4 +1,4 @@
-#SQL for Data Science
+# SQL for Data Science
 *Norfolk Data Science (NDS)*
 
 -------
