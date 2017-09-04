@@ -1,0 +1,1 @@
+jupyter nbconvert "Fraud Detection.ipynb" --to slides --post serve

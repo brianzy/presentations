@@ -1,0 +1,1 @@
+jupyter nbconvert "anomaly detection with R.ipynb" --to slides --post serve
