@@ -1,0 +1,1 @@
+jupyter nbconvert "Class Imbalance.ipynb" --to slides --post serve

@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<title>anomaly detection with R slides</title>
+<title>Class Imbalance slides</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -11859,8 +11859,8 @@ a.anchor-link {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Welcome-to-Norfolk-Data-Science">Welcome to Norfolk Data Science<a class="anchor-link" href="#Welcome-to-Norfolk-Data-Science">&#182;</a></h1><p><img src="https://secure.meetupstatic.com/photos/event/c/f/b/a/highres_452453178.jpeg"></p>
-<h3 id="Anomaly-Detection">Anomaly Detection<a class="anchor-link" href="#Anomaly-Detection">&#182;</a></h3><ul>
-<li>2017-09-05</li>
+<h3 id="Why-class-imbalances-ruin-predictions-and-how-to-remedy">Why class imbalances ruin predictions and how to remedy<a class="anchor-link" href="#Why-class-imbalances-ruin-predictions-and-how-to-remedy">&#182;</a></h3><ul>
+<li>2017-10-03</li>
 <li>Christopher Brossman</li>
 </ul>
 
@@ -11871,17 +11871,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="General-Methods-for-Anomaly-Detection">General Methods for Anomaly Detection<a class="anchor-link" href="#General-Methods-for-Anomaly-Detection">&#182;</a></h1><ul>
-<li>Some threshold for deviation between expected and observed is surpassed. <ul>
-<li>Requires labeled data and need to build model</li>
-</ul>
-</li>
-<li>Completely automated systems which look for deviations<ul>
-<li>Time series models (we will cover <a href="https://github.com/twitter/AnomalyDetection">twitter's implementation in R</a>)</li>
-<li>Multivariate models using one-class SVC (have implemented in R &amp; python)</li>
-</ul>
-</li>
-</ul>
+<h3 id="What-is-the-class-imbalance-problem?">What is the class imbalance problem?<a class="anchor-link" href="#What-is-the-class-imbalance-problem?">&#182;</a></h3><p><img src="http://sci2s.ugr.es/sites/default/files/files/ComplementaryMaterial/imbalanced/yeast4_s1.0tr_mcg_vs_gvh.png"></p>
 
 </div>
 </div>
@@ -11890,7 +11880,7 @@ a.anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Timeseries-model-using-twitter's-AnomalyDetection">Timeseries model using twitter's AnomalyDetection<a class="anchor-link" href="#Timeseries-model-using-twitter's-AnomalyDetection">&#182;</a></h1>
+<h3 id="Lets-look-at-some-real-data">Lets look at some real data<a class="anchor-link" href="#Lets-look-at-some-real-data">&#182;</a></h3>
 </div>
 </div>
 </div></section></section><section><section>
@@ -11899,14 +11889,63 @@ a.anchor-link {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1"># First read in some data</span>
-<span class="kn">library</span><span class="p">(</span><span class="s">&#39;tidyverse&#39;</span><span class="p">)</span>
-cr_hour <span class="o">&lt;-</span> read_csv<span class="p">(</span><span class="s">&#39;crh.csv&#39;</span><span class="p">)</span>
-cr_hour <span class="o">&lt;-</span> cr_hour <span class="o">%&gt;%</span> 
-  mutate<span class="p">(</span>ds <span class="o">=</span> <span class="kp">as.POSIXct</span><span class="p">(</span>timestamp<span class="p">),</span> cr_scaled <span class="o">=</span> cr<span class="o">*</span><span class="m">100000</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="c1">#scaling to better understand expected value later on</span>
-  filter<span class="p">(</span>month <span class="o">==</span> <span class="m">8</span><span class="p">)</span> <span class="o">%&gt;%</span> 
-  select<span class="p">(</span>ds<span class="p">,</span>cr_scaled<span class="p">)</span>
-<span class="kp">head</span><span class="p">(</span>cr_hour<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">utils</span>  
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">imblearn.over_sampling</span> <span class="k">import</span> <span class="n">SMOTE</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
+
+<span class="c1">#metrics to print</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">metrics</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">confusion_matrix</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">precision_score</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">recall_score</span>
+
+<span class="c1"># percision recall curve</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">precision_recall_curve</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">average_precision_score</span>
+
+<span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#to reproduce results</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div></section></section><section><section>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#use Iris data and pick one flower to filter down</span>
+<span class="c1"># currently each has 50</span>
+<span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sepal_length&#39;</span><span class="p">,</span><span class="s1">&#39;sepal_width&#39;</span><span class="p">,</span><span class="s1">&#39;petal_length&#39;</span><span class="p">,</span><span class="s1">&#39;petal_width&#39;</span><span class="p">,</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data&#39;</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="n">col</span><span class="p">)</span>
+
+<span class="c1">#pick a flower and select 10 out of the 50 observations</span>
+<span class="n">virginica</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;Iris-virginica&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">not_virginica</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s1">&#39;Iris-virginica&#39;</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">virginica</span><span class="p">,</span><span class="n">not_virginica</span><span class="p">])</span>
+<span class="c1">#turn into binary </span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;virginica&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;Iris-virginica&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pct Minority: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="o">.</span><span class="n">count</span><span class="p">())</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Pct Majority: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="o">.</span><span class="n">count</span><span class="p">())</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;%&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -11922,100 +11961,13 @@ cr_hour <span class="o">&lt;-</span> cr_hour <span class="o">%&gt;%</span>
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Loading tidyverse: ggplot2
-Loading tidyverse: tibble
-Loading tidyverse: tidyr
-Loading tidyverse: readr
-Loading tidyverse: purrr
-Loading tidyverse: dplyr
-Conflicts with tidy packages ---------------------------------------------------
-filter(): dplyr, stats
-lag():    dplyr, stats
-Parsed with column specification:
-cols(
-  Date = col_character(),
-  year = col_integer(),
-  month = col_integer(),
-  day = col_integer(),
-  hr = col_integer(),
-  timestamp = col_datetime(format = &#34;&#34;),
-  cr = col_double()
-)
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Pct Minority: 9.09%
+Pct Majority: 90.91%
 </pre>
 </div>
 </div>
 
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-<table>
-<thead><tr><th scope=col>ds</th><th scope=col>cr_scaled</th></tr></thead>
-<tbody>
-	<tr><td>2017-08-01 00:00:00</td><td>1000               </td></tr>
-	<tr><td>2017-08-01 01:00:00</td><td>1000               </td></tr>
-	<tr><td>2017-08-01 02:00:00</td><td>1000               </td></tr>
-	<tr><td>2017-08-01 03:00:00</td><td>2000               </td></tr>
-	<tr><td>2017-08-01 04:00:00</td><td>1000               </td></tr>
-	<tr><td>2017-08-01 05:00:00</td><td>1000               </td></tr>
-</tbody>
-</table>
-
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div></section></section><section><section>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Lets-look-at-the-function">Lets look at the function<a class="anchor-link" href="#Lets-look-at-the-function">&#182;</a></h1><p><code>AnomalyDetectionTs(x, max_anoms = 0.1, direction = "pos", alpha = 0.05,
-  only_last = NULL, threshold = "None", e_value = FALSE,
-  longterm = FALSE, piecewise_median_period_weeks = 2, plot = FALSE,
-  y_log = FALSE, xlabel = "", ylabel = "count", title = NULL,
-  verbose = FALSE)</code></p>
-<p>Arguments</p>
-<ul>
-<li>x : Time series as a two column data frame where the first column consists of the timestamps and the second column consists of the observations.</li>
-<li>max_anoms: Maximum number of anomalies that S-H-ESD will detect as a percentage of the data.</li>
-<li>direction: Directionality of the anomalies to be detected. Options are: 'pos' | 'neg' | 'both'.</li>
-<li>alpha: The level of statistical significance with which to accept or reject anomalies.</li>
-<li>only_last: Find and report anomalies only within the last day or hr in the time series. NULL | 'day' | 'hr'.</li>
-<li>threshold: Only report positive going anoms above the threshold specified. Options are: 'None' | 'med_max' | 'p95' | 'p99'.</li>
-<li>e_value:Add an additional column to the anoms output containing the expected value.</li>
-<li>longterm: Increase anom detection efficacy for time series that are greater than a month. See Details below.</li>
-<li>piecewise_median_period_weeks: The piecewise median time window as described in Vallis, Hochenbaum, and Kejariwal (2014). Defaults to 2.</li>
-<li>plot: A flag indicating if a plot with both the time series and the estimated anoms, indicated by circles, should also be returned.</li>
-<li>y_log: Apply log scaling to the y-axis. This helps with viewing plots that have extremely large positive anomalies relative to the rest of the data.</li>
-<li>xlabel: X-axis label to be added to the output plot.</li>
-<li>ylabel: Y-axis label to be added to the output plot.</li>
-<li>title: Title for the output plot.</li>
-<li>verbose: Enable debug messages</li>
-</ul>
-
-</div>
-</div>
-</div></section></section><section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="kn">library</span><span class="p">(</span>AnomalyDetection<span class="p">)</span>
-ad <span class="o">=</span> AnomalyDetectionTs<span class="p">(</span>cr_hour<span class="p">,</span> max_anoms<span class="o">=</span><span class="m">0.02</span><span class="p">,</span> direction<span class="o">=</span><span class="s">&#39;both&#39;</span><span class="p">,</span> 
-                         plot<span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> e_value <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-                         xlabel <span class="o">=</span> <span class="s">&#39;day&#39;</span><span class="p">,</span> ylabel<span class="o">=</span><span class="s">&#39;Conversion Rate&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
@@ -12025,293 +11977,94 @@ ad <span class="o">=</span> AnomalyDetectionTs<span class="p">(</span>cr_hour<sp
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>ad<span class="o">$</span>anoms
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">evaluation</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">y_prob</span><span class="p">,</span><span class="n">ztype</span><span class="p">):</span>
+    <span class="n">y_class</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">y_prob</span> <span class="o">&gt;</span> <span class="o">.</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_class</span><span class="p">)</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_class</span><span class="p">)</span>
+    <span class="n">pre</span> <span class="o">=</span> <span class="n">precision_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">y_class</span><span class="p">)</span>
+    <span class="n">rec</span> <span class="o">=</span> <span class="n">recall_score</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">y_class</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Evaluation for &#39;</span> <span class="o">+</span> <span class="n">ztype</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy : &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span><span class="mi">4</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;F1       : &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span><span class="mi">4</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Precision: &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">pre</span><span class="p">,</span><span class="mi">4</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Recall   : &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">rec</span><span class="p">,</span><span class="mi">4</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_class</span><span class="p">))</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-<table>
-<thead><tr><th scope=col>timestamp</th><th scope=col>anoms</th><th scope=col>expected_value</th></tr></thead>
-<tbody>
-	<tr><td>2017-08-01 10:00:00</td><td>4000               </td><td>1823               </td></tr>
-	<tr><td>2017-08-09 10:00:00</td><td>4000               </td><td>1713               </td></tr>
-	<tr><td>2017-08-28 04:00:00</td><td>3000               </td><td> 789               </td></tr>
-</tbody>
-</table>
-
-</div>
-
-</div>
-
 </div>
 </div>
 
 </div></section></section><section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="kp">options</span><span class="p">(</span>repr.plot.width<span class="o">=</span><span class="m">7</span><span class="p">,</span> repr.plot.height<span class="o">=</span><span class="m">4</span><span class="p">)</span>
-ad<span class="o">$</span>plot
-</pre></div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Imbalance-is-Common,-and-Accuracy-is-NOT-the-right-metric">Imbalance is Common, and Accuracy is NOT the right metric<a class="anchor-link" href="#Imbalance-is-Common,-and-Accuracy-is-NOT-the-right-metric">&#182;</a></h3><ul>
+<li>In prior example 9% of classes were "virginica" and 91% were "not virginica"</li>
+<li>If we predicted all classes were "not virginica" we would have 91% accuracy!</li>
+<li>Your classifier may be doing this!</li>
+</ul>
+<p>... but the accuracy... it is like a paradox</p>
 
 </div>
 </div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0gAAAHgCAMAAACo6b1DAAAAaVBMVEUAAAAAv8QzMzNNTU1o
-aGh8fHyDg4OMjIyVlZWZmZmampqjo6Onp6evr6+ysrK5ubm9vb3BwcHHx8fJycnQ0NDR0dHY
-2NjZ2dne3t7h4eHk5OTlfXbp6enq6urv7+/w8PD19fX5kYr///+NmLnKAAAACXBIWXMAABJ0
-AAASdAHeZh94AAAgAElEQVR4nO2di2KiOBiFM8RLR62trR3rrK017/+QS0LIjYSCpsLPnLM7
-BYH8OST5CAQUJiAIullsaAMQNAUBJAjKIIAEQRkEkCAogwASBGUQQIKgDAJIEJRBAAmCMggg
-QVAGASQIyqAfAWm/ZIwt96m1TGd6WjG2qZeeGY9vzlh2j1XEfnEPbJkK1G1pi1Ll5S8/M6Nv
-4l2xfys3ZU99lygee8kOV+Q1Wv0ESHNd3fPo2hOvS3TmbrRkz9HNS+xYCslrdQ1IM3ZOBeq2
-NK1UeQXLDz8I0oy5KXvqm0SJ2Gc2uyKv0eoHQNoy/nwW52duuxtXs7ohvMgWMtf8HFPFOmeb
-BJHX64rmso/uTBaQUuUVLn9OHGpuNnBViu6JWQLSTfYD5JD6AZAYO6npMXqytmJbXaJzdpQb
-zfWHeKnKMz4e6wxuc9g7SbRDygNSqrzC5UtZXh0j9jJwVYruiVMgTatLyg+SPXavImfBshvS
-JeqegOxjVyBS2zLahm3zWuzfbA7x3jUHSKnyaizniYvIWw1cl6J74hRIZb1O6CopP0i2x943
-ASiPrucYSLPU0XZWHpZP9tBVbn3clBdZ85d6yX5Vniqu9mb1qVzNV+Wx/Fiu4Bvdj5y2S5lq
-e27kLDfkziX9S/TC37TxRKDTSuZ6tCa9mH6iQKnyCpef2SpeRFYyV77x96/8u9FjOr4pVXJ8
-c1Lb1FdedZmEpRoUuq9y/Xk7s/vvJfdi+w4O3+8RHeUHyZ6BHJvdDJcrmyA9p4q0unSymDG2
-96/AV/rjxl/NTy96RjXeTX2Vzk9BznZd5TVx4V+fdSUC1aZqF1svip+IuWopr3D5gT1LyJ3m
-Gkrnww8+SCttzN9RsdQf9xGQEqVa7U+4A+WCZ297L7kb2y8W2RpSu0JP+XfFKZ3GRVI1NKdr
-a1ldIy1VmsRVUHVWtzVnOWUtzMqaP5c1p668V/4Fuayksus4cjZjy3LmUC3fM76VzW8/q4B1
-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
-IEFQBv0PocE9g38y+JwAAAAASUVORK5CYII="
->
-</div>
-
-</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Can-you-collect-more-data?">Can you collect more data?<a class="anchor-link" href="#Can-you-collect-more-data?">&#182;</a></h3><p>You might think it’s silly, but collecting more data is almost always overlooked.</p>
+<p>Can you collect more data? Take a second and think about whether you are able to gather more data on your problem.</p>
+<p>A larger dataset might expose a different and perhaps more balanced perspective on the classes.</p>
+<p>More examples of minor classes may be useful later when we look at resampling your dataset.</p>
 
 </div>
 </div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Try-Changing-Your-Performance-Metric">Try Changing Your Performance Metric<a class="anchor-link" href="#Try-Changing-Your-Performance-Metric">&#182;</a></h3><p>As mentioned prior - accuracy is a paradox and no longer the appropriate measurement.</p>
+<ul>
+<li>F1 Score (or F-score): A weighted average of precision and recall. - probably the single best measurement<ul>
+<li>Precision: A measure of a classifiers exactness.</li>
+<li>Recall: A measure of a classifiers completeness</li>
+</ul>
+</li>
+<li>Confusion Matrix -- always check the confusion matrix!</li>
+</ul>
+<h3 id="Also-check-out-these-metrics">Also check out these metrics<a class="anchor-link" href="#Also-check-out-these-metrics">&#182;</a></h3><ul>
+<li>Kappa (or Cohen’s kappa): Classification accuracy normalized by the imbalance of the classes in the data.</li>
+<li>ROC Curves: either traditional OR precision/recall ROC</li>
+</ul>
 
+</div>
+</div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[78]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#wont always have an anomaly</span>
-<span class="kn">library</span><span class="p">(</span>AnomalyDetection<span class="p">)</span>
-res <span class="o">=</span> AnomalyDetectionTs<span class="p">(</span>cr_hour<span class="p">,</span> max_anoms<span class="o">=</span><span class="m">0.02</span><span class="p">,</span> direction<span class="o">=</span><span class="s">&#39;both&#39;</span><span class="p">,</span> plot<span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> e_value <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-                         xlabel <span class="o">=</span> <span class="s">&#39;day&#39;</span><span class="p">,</span> ylabel<span class="o">=</span><span class="s">&#39;Conversion Rate&#39;</span><span class="p">,</span>only_last<span class="o">=</span><span class="s">&#39;day&#39;</span><span class="p">)</span>
-res
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_dev</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_dev</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;virginica&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in train set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in dev set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_dev</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+<span class="n">logistic</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">logistic</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1">#Get predicted classes</span>
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_dev_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_dev</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_train_pred</span><span class="p">,</span><span class="s1">&#39;training set&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_dev</span><span class="p">,</span><span class="n">y_dev_pred</span><span class="p">,</span><span class="s1">&#39;testing set&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12327,344 +12080,26 @@ res
 <div class="prompt"></div>
 
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Evaluation for training set
+Accuracy :  0.9351
+F1       :  0.0
+Precision:  0.0
+Recall   :  0.0
 
+[[72  0]
+ [ 5  0]]
 
-<div class="output_text output_subarea ">
-<pre>$anoms
-data frame with 0 columns and 0 rows
+Evaluation for testing set
+Accuracy :  0.8485
+F1       :  0.0
+Precision:  0.0
+Recall   :  0.0
 
-$plot
-NULL
+[[28  0]
+ [ 5  0]]
 </pre>
 </div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA0gAAAHgCAMAAACo6b1DAAAAA1BMVEX///+nxBvIAAAACXBI
-WXMAABJ0AAASdAHeZh94AAABnklEQVR4nO3BAQ0AAADCoPdPbQ43oAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA+
-DCk6AAELy4lsAAAAAElFTkSuQmCC"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div></section></section><section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#lets see if it can detect a longer time period</span>
-
-cr_day <span class="o">&lt;-</span> read_csv<span class="p">(</span><span class="s">&#39;cr.csv&#39;</span><span class="p">)</span>
-cr_day <span class="o">&lt;-</span> cr_day <span class="o">%&gt;%</span> 
-  mutate<span class="p">(</span>d <span class="o">=</span> <span class="kp">as.POSIXct</span><span class="p">(</span>d<span class="p">),</span> cr <span class="o">=</span> <span class="kp">gsub</span><span class="p">(</span><span class="s">&#39;\t&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">,</span>cr<span class="p">))</span> <span class="o">%&gt;%</span>
-  mutate<span class="p">(</span>cr_scaled <span class="o">=</span> <span class="kp">as.numeric</span><span class="p">(</span>cr<span class="p">)</span><span class="o">*</span><span class="m">100000</span><span class="p">)</span> <span class="o">%&gt;%</span> 
-  select<span class="p">(</span>d<span class="p">,</span>cr_scaled<span class="p">)</span>
-
-<span class="kn">library</span><span class="p">(</span>AnomalyDetection<span class="p">)</span>
-res <span class="o">=</span> AnomalyDetectionTs<span class="p">(</span>cr_day<span class="p">,</span> max_anoms<span class="o">=</span><span class="m">0.02</span><span class="p">,</span> direction<span class="o">=</span><span class="s">&#39;both&#39;</span><span class="p">,</span> plot<span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> e_value <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span>
-                         xlabel <span class="o">=</span> <span class="s">&#39;day&#39;</span><span class="p">,</span> ylabel<span class="o">=</span><span class="s">&#39;Conversion Rate&#39;</span><span class="p">)</span>
-res
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Parsed with column specification:
-cols(
-  d = col_date(format = &#34;&#34;),
-  cr = col_character()
-)
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_text output_subarea ">
-<pre>$anoms
-            timestamp    anoms expected_value
-1 2016-09-10 20:00:00 2332.764           1591
-2 2016-11-24 19:00:00 4157.531           1420
-3 2016-11-27 19:00:00 2671.162           1877
-
-$plot
-</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-RK5CYII="
->
-</div>
-
 </div>
 
 </div>
@@ -12675,44 +12110,45 @@ RK5CYII="
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Lets-checkout-a-single-class-SVM-for-multivariate-anomaly-prediction">Lets checkout a single class SVM for multivariate anomaly prediction<a class="anchor-link" href="#Lets-checkout-a-single-class-SVM-for-multivariate-anomaly-prediction">&#182;</a></h1>
+<h3 id="Try-Resampling-Your-Dataset">Try Resampling Your Dataset<a class="anchor-link" href="#Try-Resampling-Your-Dataset">&#182;</a></h3><p>Risk if undersample
+<img src="http://www.chioka.in/wp-content/uploads/2013/08/Undersampling.png"></p>
+<p>Risk if oversample
+<img src="http://www.chioka.in/wp-content/uploads/2013/08/Oversampling.png"></p>
+<p>Some Rules of Thumb</p>
+<ul>
+<li>Consider testing under-sampling when you have an a lot data (tens- or hundreds of thousands of instances or more)</li>
+<li>Consider testing over-sampling when you don’t have a lot of data (tens of thousands of records or less)</li>
+<li>Consider testing random and non-random (e.g. stratified) sampling schemes.</li>
+<li>Consider testing different resampled ratios (e.g. you don’t have to target a 1:1 ratio in a binary classification problem, try other ratios)</li>
+</ul>
+
 </div>
 </div>
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[83]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#lets look at the good old iris data set</span>
-<span class="kn">library</span><span class="p">(</span>e1071<span class="p">);</span>
-<span class="kn">library</span><span class="p">(</span>caret<span class="p">);</span>
-<span class="kn">library</span><span class="p">(</span>NLP<span class="p">);</span>
-<span class="kn">library</span><span class="p">(</span>tm<span class="p">);</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#undersample</span>
+<span class="n">virginica</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">virginica</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">not_virginica</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">virginica</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">df_undersample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">virginica</span><span class="p">,</span><span class="n">not_virginica</span><span class="p">])</span>
 
-data<span class="p">(</span>iris<span class="p">)</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_dev</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_dev</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df_undersample</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;virginica&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">df_undersample</span><span class="o">.</span><span class="n">virginica</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in train set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in dev set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_dev</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
 
-<span class="c1">#split to see how well the predictions work</span>
-iris<span class="o">$</span>SpeciesClass<span class="p">[</span>iris<span class="o">$</span>Species<span class="o">==</span><span class="s">&quot;versicolor&quot;</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="s">&quot;TRUE&quot;</span>
-iris<span class="o">$</span>SpeciesClass<span class="p">[</span>iris<span class="o">$</span>Species<span class="o">!=</span><span class="s">&quot;versicolor&quot;</span><span class="p">]</span> <span class="o">&lt;-</span> <span class="s">&quot;FALSE&quot;</span>
-trainPositive<span class="o">&lt;-</span><span class="kp">subset</span><span class="p">(</span>iris<span class="p">,</span>SpeciesClass<span class="o">==</span><span class="s">&quot;TRUE&quot;</span><span class="p">)</span>
-testnegative<span class="o">&lt;-</span><span class="kp">subset</span><span class="p">(</span>iris<span class="p">,</span>SpeciesClass<span class="o">==</span><span class="s">&quot;FALSE&quot;</span><span class="p">)</span>
-inTrain<span class="o">&lt;-</span>createDataPartition<span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="kp">nrow</span><span class="p">(</span>trainPositive<span class="p">),</span>p<span class="o">=</span><span class="m">0.6</span><span class="p">,</span><span class="kt">list</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="n">logistic</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">logistic</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 
-<span class="c1">#take only true predictors into a single DF</span>
-trainpredictors<span class="o">&lt;-</span>trainPositive<span class="p">[</span>inTrain<span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">]</span>
-trainLabels<span class="o">&lt;-</span>trainPositive<span class="p">[</span>inTrain<span class="p">,</span><span class="m">6</span><span class="p">]</span>
+<span class="c1">#Get predicted classes</span>
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_dev_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_dev</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
 
-testPositive<span class="o">&lt;-</span>trainPositive<span class="p">[</span><span class="o">-</span>inTrain<span class="p">,]</span>
-testPosNeg<span class="o">&lt;-</span><span class="kp">rbind</span><span class="p">(</span>testPositive<span class="p">,</span>testnegative<span class="p">)</span>
-
-testpredictors<span class="o">&lt;-</span>testPosNeg<span class="p">[,</span><span class="m">1</span><span class="o">:</span><span class="m">4</span><span class="p">]</span>
-testLabels<span class="o">&lt;-</span>testPosNeg<span class="p">[,</span><span class="m">6</span><span class="p">]</span>
-
-<span class="c1">#see what this looks like</span>
-<span class="kp">print</span><span class="p">(</span><span class="kp">head</span><span class="p">(</span>iris<span class="p">))</span>
-<span class="kp">print</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-<span class="kp">print</span><span class="p">(</span><span class="kp">head</span><span class="p">(</span>trainpredictors<span class="p">))</span>
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_train_pred</span><span class="p">,</span><span class="s1">&#39;training set&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_dev</span><span class="p">,</span><span class="n">y_dev_pred</span><span class="p">,</span><span class="s1">&#39;testing set&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12728,47 +12164,26 @@ testLabels<span class="o">&lt;-</span>testPosNeg<span class="p">[,</span><span c
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>Loading required package: lattice
-
-Attaching package: &#39;caret&#39;
-
-The following object is masked from &#39;package:purrr&#39;:
-
-    lift
-
-
-Attaching package: &#39;NLP&#39;
-
-The following object is masked from &#39;package:ggplot2&#39;:
-
-    annotate
-
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species SpeciesClass
-1          5.1         3.5          1.4         0.2  setosa        FALSE
-2          4.9         3.0          1.4         0.2  setosa        FALSE
-3          4.7         3.2          1.3         0.2  setosa        FALSE
-4          4.6         3.1          1.5         0.2  setosa        FALSE
-5          5.0         3.6          1.4         0.2  setosa        FALSE
-6          5.4         3.9          1.7         0.4  setosa        FALSE
-[1] &#34;&#34;
-   Sepal.Length Sepal.Width Petal.Length Petal.Width
-51          7.0         3.2          4.7         1.4
-55          6.5         2.8          4.6         1.5
-56          5.7         2.8          4.5         1.3
-57          6.3         3.3          4.7         1.6
-58          4.9         2.4          3.3         1.0
-59          6.6         2.9          4.6         1.3
+<pre>virginica in train set =  7
+virginica in dev set =  3
+Evaluation for training set
+Accuracy :  0.9286
+F1       :  0.7692
+Precision:  0.8333
+Recall   :  0.7143
+
+[[34  1]
+ [ 2  5]]
+
+Evaluation for testing set
+Accuracy :  1.0
+F1       :  1.0
+Precision:  1.0
+Recall   :  1.0
+
+[[15  0]
+ [ 0  3]]
 </pre>
 </div>
 </div>
@@ -12777,54 +12192,43 @@ The following object is masked from &#39;package:ggplot2&#39;:
 </div>
 
 </div></section></section><section><section>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
 <div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span><span class="c1">#feed in all positive classes. SVM will use this to predict if class is same or not later on</span>
-
-svm.model<span class="o">&lt;-</span>svm<span class="p">(</span>trainpredictors<span class="p">,</span>y<span class="o">=</span><span class="kc">NULL</span><span class="p">,</span>
-               type<span class="o">=</span><span class="s">&#39;one-classification&#39;</span><span class="p">,</span>
-               nu<span class="o">=</span><span class="m">0.10</span><span class="p">,</span>
-               scale<span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span>
-               kernel<span class="o">=</span><span class="s">&quot;radial&quot;</span><span class="p">)</span>
-
-<span class="c1">#SVM params</span>
-<span class="c1"># nu - what is the proportion of outliers we expect in the data?</span>
-<span class="c1"># kernel -- type: linear, rbf (non linear function)</span>
-<span class="c1"># gamma - param of the RBF kernel type and controls the influence of individual training samples</span>
-<span class="c1"># this affects the smoothnees of the model. Low gamma has low var &amp; high bias, high gamma is high var, low bias</span>
-
-<span class="c1">#svm(x, y = NULL, scale = TRUE, type = NULL, kernel =</span>
-<span class="c1">#&quot;radial&quot;, degree = 3, gamma = if (is.vector(x)) 1 else 1 / ncol(x),</span>
-<span class="c1">#coef0 = 0, cost = 1, nu = 0.5,</span>
-<span class="c1">#class.weights = NULL, cachesize = 40, tolerance = 0.001, epsilon = 0.1,</span>
-<span class="c1">#shrinking = TRUE, cross = 0, probability = FALSE, fitted = TRUE,</span>
-<span class="c1">#..., subset, na.action = na.omit)</span>
-</pre></div>
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Try-Generate-Synthetic-Samples">Try Generate Synthetic Samples<a class="anchor-link" href="#Try-Generate-Synthetic-Samples">&#182;</a></h3><h3 id="Try-SMOTE---how-it-works:">Try SMOTE - how it works:<a class="anchor-link" href="#Try-SMOTE---how-it-works:">&#182;</a></h3><p><img src="http://www.chioka.in/wp-content/uploads/2013/08/SMOTE.png"></p>
+<h3 id="risk-of-SMOTE">risk of SMOTE<a class="anchor-link" href="#risk-of-SMOTE">&#182;</a></h3><p><img src="http://www.chioka.in/wp-content/uploads/2013/08/SMOTE-boundary.png"></p>
 
 </div>
 </div>
-</div>
-
 </div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[88]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>svm.predtrain<span class="o">&lt;-</span>predict<span class="p">(</span>svm.model<span class="p">,</span>trainpredictors<span class="p">)</span>
-svm.predtest<span class="o">&lt;-</span>predict<span class="p">(</span>svm.model<span class="p">,</span>testpredictors<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_dev</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_dev</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;virginica&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in train set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in dev set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_dev</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">()</span>
 
-confTrain<span class="o">&lt;-</span><span class="kp">table</span><span class="p">(</span>Predicted<span class="o">=</span>svm.predtrain<span class="p">,</span>Reference<span class="o">=</span>trainLabels<span class="p">)</span>
-confTest<span class="o">&lt;-</span><span class="kp">table</span><span class="p">(</span>Predicted<span class="o">=</span>svm.predtest<span class="p">,</span>Reference<span class="o">=</span>testLabels<span class="p">)</span>
+<span class="c1">#smote</span>
+<span class="n">sm</span> <span class="o">=</span> <span class="n">SMOTE</span><span class="p">(</span><span class="n">ratio</span><span class="o">=.</span><span class="mi">5</span><span class="p">,</span><span class="n">k_neighbors</span> <span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;regular&#39;</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">10</span><span class="p">);</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">fit_sample</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">y_train</span><span class="p">))</span>
 
-confusionMatrix<span class="p">(</span>confTest<span class="p">,</span>positive<span class="o">=</span><span class="s">&#39;TRUE&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;AFTER SMOTE: virginica in train set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">()</span>
 
+<span class="n">logistic</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">logistic</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
 
-<span class="kp">print</span><span class="p">(</span>confTrain<span class="p">)</span>
-<span class="kp">print</span><span class="p">(</span>confTest<span class="p">)</span>
+<span class="c1">#Get predicted classes</span>
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_dev_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_dev</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_train_pred</span><span class="p">,</span><span class="s1">&#39;training set&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_dev</span><span class="p">,</span><span class="n">y_dev_pred</span><span class="p">,</span><span class="s1">&#39;testing set&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12840,53 +12244,29 @@ confusionMatrix<span class="p">(</span>confTest<span class="p">,</span>positive<
 <div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea ">
-<pre>Confusion Matrix and Statistics
-
-         Reference
-Predicted FALSE TRUE
-    FALSE   100   12
-    TRUE      0    6
-                                          
-               Accuracy : 0.8983          
-                 95% CI : (0.8291, 0.9463)
-    No Information Rate : 0.8475          
-    P-Value [Acc &gt; NIR] : 0.074334        
-                                          
-                  Kappa : 0.4587          
- Mcnemar&#39;s Test P-Value : 0.001496        
-                                          
-            Sensitivity : 0.33333         
-            Specificity : 1.00000         
-         Pos Pred Value : 1.00000         
-         Neg Pred Value : 0.89286         
-             Prevalence : 0.15254         
-         Detection Rate : 0.05085         
-   Detection Prevalence : 0.05085         
-      Balanced Accuracy : 0.66667         
-                                          
-       &#39;Positive&#39; Class : TRUE            
-                                          </pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>         Reference
-Predicted TRUE
-    FALSE    5
-    TRUE    27
-         Reference
-Predicted FALSE TRUE
-    FALSE   100   12
-    TRUE      0    6
+<pre>virginica in train set =  5
+virginica in dev set =  5
+
+AFTER SMOTE: virginica in train set =  36
+
+Evaluation for training set
+Accuracy :  0.9907
+F1       :  0.9863
+Precision:  0.973
+Recall   :  1.0
+
+[[71  1]
+ [ 0 36]]
+
+Evaluation for testing set
+Accuracy :  0.9697
+F1       :  0.9091
+Precision:  0.8333
+Recall   :  1.0
+
+[[27  1]
+ [ 0  5]]
 </pre>
 </div>
 </div>
@@ -12894,19 +12274,198 @@ Predicted FALSE TRUE
 </div>
 </div>
 
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Try-Penalized-Models">Try Penalized Models<a class="anchor-link" href="#Try-Penalized-Models">&#182;</a></h3><ul>
+<li>You can build in a penalty proportional to the imbalance in the cost function</li>
+<li>In NN or other algorithms you can define explicitly</li>
+<li>In sklearn you can use the weighted function</li>
+<li>In this case it will be similar to getting one TP wrong is equal to getting ~9 TN wrong</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[90]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-r"><pre><span></span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_dev</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_dev</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;virginica&#39;</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">df</span><span class="o">.</span><span class="n">virginica</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span><span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in train set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_train</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;virginica in dev set = &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">y_dev</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">()</span>
+
+
+<span class="c1">#logistic regression has class_weight - to penalize the cost function to be balanced</span>
+<span class="n">logistic</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">class_weight</span><span class="o">=</span><span class="s1">&#39;balanced&#39;</span><span class="p">)</span>
+<span class="n">logistic</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1">#Get predicted classes</span>
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_dev_pred</span> <span class="o">=</span> <span class="n">logistic</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_dev</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_train_pred</span><span class="p">,</span><span class="s1">&#39;training set&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_dev</span><span class="p">,</span><span class="n">y_dev_pred</span><span class="p">,</span><span class="s1">&#39;testing set&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>virginica in train set =  5
+virginica in dev set =  5
+
+Evaluation for training set
+Accuracy :  0.9481
+F1       :  0.7143
+Precision:  0.5556
+Recall   :  1.0
+
+[[68  4]
+ [ 0  5]]
+
+Evaluation for testing set
+Accuracy :  0.9091
+F1       :  0.7692
+Precision:  0.625
+Recall   :  1.0
+
+[[25  3]
+ [ 0  5]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Try-Different-Algorithms">Try Different Algorithms<a class="anchor-link" href="#Try-Different-Algorithms">&#182;</a></h3><ul>
+<li>Some algorithms are less suseptible to class imbalances such as tree based methods -- careful not to overfit</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[91]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#random forest</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="k">import</span> <span class="n">RandomForestClassifier</span>
+<span class="n">rfc</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="n">rfc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="c1">#Get predicted classes</span>
+<span class="n">y_train_pred</span> <span class="o">=</span> <span class="n">rfc</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_train</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">y_dev_pred</span> <span class="o">=</span> <span class="n">rfc</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_dev</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_train_pred</span><span class="p">,</span><span class="s1">&#39;training set&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="n">evaluation</span><span class="p">(</span><span class="n">y_dev</span><span class="p">,</span><span class="n">y_dev_pred</span><span class="p">,</span><span class="s1">&#39;testing set&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Evaluation for training set
+Accuracy :  0.987
+F1       :  0.8889
+Precision:  1.0
+Recall   :  0.8
+
+[[72  0]
+ [ 1  4]]
+
+Evaluation for testing set
+Accuracy :  0.9697
+F1       :  0.8889
+Precision:  1.0
+Recall   :  0.8
+
+[[28  0]
+ [ 1  4]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Try-a-Different-Perspective">Try a Different Perspective<a class="anchor-link" href="#Try-a-Different-Perspective">&#182;</a></h3><ul>
+<li><p>There are fields of study dedicated to imbalanced datasets. They have their own algorithms, measures and terminology.</p>
+</li>
+<li><p>Taking a look and thinking about your problem from these perspectives can sometimes shame loose some ideas.</p>
+</li>
+<li><p>Two you might like to consider are anomaly detection and change detection.</p>
+</li>
+<li><p>checkout NFDS github from 2017-09 for examples on single class SVM for anomaly detection</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Try-Getting-Creative">Try Getting Creative<a class="anchor-link" href="#Try-Getting-Creative">&#182;</a></h3><ul>
+<li><p>Really climb inside your problem and think about how to break it down into smaller problems that are more tractable.</p>
+</li>
+<li><p>For inspiration, take a look at the very creative answers on Quora in response to the question “In classification, how do you handle an unbalanced training set?”</p>
+</li>
+<li><p>Mix and match methods to find the right combination for your data!</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Thank-you">Thank you<a class="anchor-link" href="#Thank-you">&#182;</a></h1><p><img src="http://cdn.ttgtmedia.com/rms/microscopeuk/big%20data%20concept%202_290X230.jpg"></p>
+<h3 id="Good-luck-exploring-data">Good luck exploring data<a class="anchor-link" href="#Good-luck-exploring-data">&#182;</a></h3>
+</div>
+</div>
 </div></section></section>
 </div>
 </div>
