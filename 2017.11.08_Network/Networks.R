@@ -1,12 +1,22 @@
-##http://varianceexplained.org/r/love-actually-network/
+##############################################
+###### Network Analysis ######
+# Author: DRL
+# Date: 2017-11-08
+# Purpose: Create Network Models
+##############################################
+# Much of this code and example comes from:
+# http://varianceexplained.org/r/love-actually-network/
+# Check out the site, learn a lot from it
+##############################################
 
+## Libraries
 library(dplyr)
 library(stringr)
 library(tidyr)
 
 isAllUpper <- function(x) {ifelse(unlist(gregexpr("[a-z]", x))[1] == -1, TRUE, FALSE)}
 
-raw <- readLines("C:/Users/DKF4F/Desktop/2017.10.02_Love_Actually/love_actually.txt")
+raw <- readLines(url("https://github.com/NorfolkDataSci/presentations/blob/master/2017.11.08_Network/love_actually.txt"))
 
 lines <- data_frame(raw1 = raw) %>%
   filter(raw1 != "")
