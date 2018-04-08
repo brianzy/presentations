@@ -1,0 +1,1 @@
+spark-submit --deploy-mode cluster s3://leesa.east2.training/jobs/pyspark_file_job.py
